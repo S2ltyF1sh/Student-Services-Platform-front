@@ -1,5 +1,5 @@
 <template>
-  <RouterView></RouterView>
+ <div>这是SSP</div>
 </template>
 
 <script setup lang="ts">
