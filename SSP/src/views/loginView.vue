@@ -69,7 +69,7 @@ const login = () => {
 </script>
 
 <style scoped>
-@import url('./loginMain.css');
+@import url('../viewsStyle/loginView.css');
 @import url('../style/appliedButton.css');
 @import url('../style/input.css');
 </style>
