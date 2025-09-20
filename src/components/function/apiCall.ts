@@ -1,7 +1,8 @@
-import axios from 'axios';
-import { computed } from 'vue';
+import axios from 'axios'
+import { computed } from 'vue'
 
-type ApiType = 'login' | 'regist' | 'logout';
+type ApiType = 'login' | 'regist' | 'logout' | 'post'
+type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
 
 interface UserRequestBody {
   userName?: string;
@@ -9,36 +10,61 @@ interface UserRequestBody {
   password?: string;
   type?: number;
   email?: string;
+  image?: File | Blob | string;
 }
 
 interface QueryParams {
   user_id?: number | string;
 }
 
+interface ApiCallOptions {
+  headers?: Record<string, string>;
+}
+
+const isFormData = (data: unknown): data is FormData => {
+  return data instanceof FormData;
+}
+
 export const apiCall = (
   apiType: ApiType,
-  body?: UserRequestBody,
-  query?: QueryParams
+  body?: UserRequestBody | FormData,
+  query?: QueryParams,
+  options?: ApiCallOptions
 ) => {
   const target = computed(() => {
     switch(apiType) {
       case 'login': return '/api/user/login';
       case 'regist': return '/api/user/reg';
       case 'logout': return '/api/user/logout';
+      case 'post': return '/api/student/post';
       default: return ''
     }
   });
 
-  let method: 'get' | 'post' = 'post';
-  method = 'post';
-
+const apiMethodMap: Record<ApiType, HttpMethod> = {
+  login: 'post',
+  regist: 'post',
+  logout: 'post',
+  post: 'post'
+}
 
   const config = {
-    method,
-    url: 'http://e7f876fc.natappfree.cc'+target.value,
+    method: apiMethodMap[apiType] || 'post',
+    url: ' http://k8acdf29.natappfree.cc' + target.value,
+    params: query,
     data: body,
-    params: query
-  };
+    headers: {
+      ...options?.headers,
+    } as Record<string, string>
+  }
+
+  if (body) {
+    if (isFormData(body)) {
+      config.headers['Content-Type'] = 'multipart/form-data';
+    } else if (!config.headers['Content-Type']) {
+      config.headers['Content-Type'] = 'application/json';
+    }
+  }
 
   // 发送请求
   return axios(config)
@@ -52,6 +78,6 @@ export const apiCall = (
     })
     .catch(error => {
       console.error(`${apiType}错误:`, error);
-      throw error;
-    });
-};
+      throw error
+    })
+}
