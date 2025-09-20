@@ -6,12 +6,6 @@
         <div class="guide">
           <a
             href="#"
-            :class="{active: viewStore.currentView === 'home'}"
-            @click.prevent="viewStore.changeView('home')">
-            报修广场
-          </a>
-          <a
-            href="#"
             :class="{active: viewStore.currentView === 'toReport'}"
             @click.prevent="viewStore.changeView('toReport')">
             我要报修
@@ -25,7 +19,7 @@
         </div>
       </div>
       <div class="userStatus">
-
+        <button @click="turnLogin()">登录</button>
       </div>
     </div>
     <div class="content">
@@ -40,9 +34,13 @@
 </template>
 
 <script setup lang="ts">
-import { useViewStore } from '../stores/stores'
+import router from '@/router'
+import { useViewStore } from '../stores/mainStore'
 const viewStore = useViewStore()
 
+const turnLogin = () =>{
+  router.push('/login')
+}
 </script>
 
 <style scoped>

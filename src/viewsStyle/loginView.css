@@ -1,47 +1,147 @@
-.Container{
-  background-color: aqua;
+.Container {
+  background-color: rgb(118, 151, 234);
   width: 1000px;
-  height: 700px;
+  min-height: 700px;
+  height: auto;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  .loginContainer{
-    background-color: azure;
-    min-width: 200px;
-    min-height: 200px;
+  overflow: hidden;
+  h1 {
+    color: #dceeff;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(69, 32, 80, 0.6);
+  }
+  .sliderContainer {
+    position: relative;
+    width: 42%;
+    height: 320px;
+    overflow: hidden;
+    margin: 20px;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    .loginInfo{
+    .slider {
       display: flex;
-      justify-content: center;
-      flex-direction: column;
-    }
-    .loginInfo span{
-      display: flex;
-    }
-    .loginInfo p{
-      min-width: 80px;
-      padding: 0px;
-      margin: 0px;
+      width: 200%;
+      height: 100%;
+      transition: transform 0.5s ease-in-out;
+
+      &.login {
+        transform: translateX(0);
+      }
+
+      &.regist {
+        transform: translateX(-50%);
+      }
+
+      .slide {
+        width: 50%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.registSlide {
+          background-color: rgb(91, 155, 210);
+        }
+
+        &.loginSlide {
+          background-color: rgb(91, 155, 210);
+        }
+
+        .inputContainer {
+          width: 100%;
+          padding: 20px;
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+
+          .inputInfo {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            width: 100%;
+
+            span {
+              display: flex;
+              margin-bottom: 15px;
+              align-items: center;
+
+              p {
+                min-width: 80px;
+                height: 40px;
+                padding: 0px;
+                margin: 0px;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                margin-right: 10px;
+              }
+
+              input[type="text"],
+              input[type="password"],
+              input[type="email"] {
+                flex: 1;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: rgb(208, 221, 255);
+                &:focus {
+                  outline: none;
+                  background-color: rgb(247, 249, 255) ;
+                  box-shadow: 0 0 8px rgba(8, 15, 24, 0.5);
+                  border-color: rgb(84, 96, 131);
+                }
+              }
+
+              .radios {
+                display: flex;
+                gap: 5px;
+
+                label {
+                  display: flex;
+                  align-items: center;
+                  gap: 5px;
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
-  .registContainer{
-    background-color: rgb(93, 99, 99);
-    min-width: 200px;
-    min-height: 200px;
 
+  .functionButtons {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+
+    .functionButton {
+      display: grid;
+      place-items: center;
+      width: 130px;
+      height: 40px;
+      border: 2px solid #e3e5e7;
+      border-radius: 8px;
+      background-color: rgb(118, 151, 234);
+      font-size: large;
+      transition: 0.3s;
+      font-weight: 600;
+      color: rgb(208, 223, 244);
+      font-family: 'Segoe UI';
+      cursor: pointer;
+
+      &:hover {
+        color: rgb(54, 107, 180);
+      }
+    }
   }
 }

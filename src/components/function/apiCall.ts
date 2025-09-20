@@ -81,3 +81,47 @@ const apiMethodMap: Record<ApiType, HttpMethod> = {
       throw error
     })
 }
+
+          // const selectedFile = ref<File | null>(null);
+
+
+
+          // <span class="lableInput"><p>图片上传：</p><input type="file" @change="handleFileSelect" accept="image/*"></span>
+
+
+
+          // const handleFileSelect = (event: Event) => {
+          //   if (!(event.target instanceof HTMLInputElement)) {
+          //     return;
+          //   }
+
+          //   if (!event.target.files || event.target.files.length === 0) {
+          //     return;
+          //   }
+
+          //   selectedFile.value = event.target.files[0];
+          // };
+
+
+
+          // const formData = new FormData();
+
+          // formData.append('accountName', "1");
+          // formData.append('password', "12345678");
+          // formData.append('title', "1");
+          // formData.append('postType', "1");
+          // formData.append('isArgent', "true");
+          // formData.append('isAnonymity', "false");
+          // formData.append('isArgent', "55");
+
+          // if (selectedFile.value) {
+          //   formData.append('image', selectedFile.value);
+          // } else {
+          //   try {
+          //     const response = await fetch('/src/components/img/b_194d524861bc60ea62da2963ffc88d58.jpg');
+          //     const blob = await response.blob();
+          //     formData.append('image', blob, 'b_194d524861bc60ea62da2963ffc88d58.jpg');
+          //   } catch (error) {
+          //     console.error('无法加载图片:', error);
+          //   }
+          // }
