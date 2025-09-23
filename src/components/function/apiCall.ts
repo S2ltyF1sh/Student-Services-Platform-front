@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { computed } from 'vue'
+import { useLoginStore } from '../../stores/loginStore' // 根据实际路径调整
 
-type ApiType = 'login' | 'regist' | 'logout' | 'post'
+type ApiType = 'login' | 'regist' | 'logout' | 'post' | 'edit'
 type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
 
 interface UserRequestBody {
@@ -19,6 +20,7 @@ interface QueryParams {
 
 interface ApiCallOptions {
   headers?: Record<string, string>;
+  noContentType?: boolean;
 }
 
 const isFormData = (data: unknown): data is FormData => {
@@ -37,31 +39,52 @@ export const apiCall = (
       case 'regist': return '/api/user/reg';
       case 'logout': return '/api/user/logout';
       case 'post': return '/api/student/post';
+      case 'edit': return '/api/user/edit';
       default: return ''
     }
   });
 
-const apiMethodMap: Record<ApiType, HttpMethod> = {
-  login: 'post',
-  regist: 'post',
-  logout: 'post',
-  post: 'post'
-}
-
-  const config = {
-    method: apiMethodMap[apiType] || 'post',
-    url: ' http://k8acdf29.natappfree.cc' + target.value,
-    params: query,
-    data: body,
-    headers: {
-      ...options?.headers,
-    } as Record<string, string>
+  const apiMethodMap: Record<ApiType, HttpMethod> = {
+    login: 'post',
+    regist: 'post',
+    logout: 'post',
+    post: 'post',
+    edit: 'put'
   }
 
-  if (body) {
+  const loginStore = useLoginStore();
+
+  // 构建配置对象
+  const config: {
+    method: HttpMethod;
+    url: string;
+    params?: QueryParams;
+    data?: UserRequestBody | FormData | null;
+    headers: Record<string, string>;
+  } = {
+    method: apiMethodMap[apiType] || 'post',
+    url: 'http://abd77f82.natappfree.cc' + target.value,
+    headers: {
+      ...options?.headers,
+    }
+  }
+
+  if (apiType !== 'login' && apiType !== 'regist') {
+    config.headers['Authorization'] = loginStore.header;
+  }
+
+  if (query && Object.keys(query).length > 0) {
+    config.params = query;
+  }
+
+  if (body !== undefined && body !== null) {
+    config.data = body;
+  }
+
+  if (body !== undefined && body !== null) {
     if (isFormData(body)) {
       config.headers['Content-Type'] = 'multipart/form-data';
-    } else if (!config.headers['Content-Type']) {
+    } else if (!options?.noContentType && !config.headers['Content-Type']) {
       config.headers['Content-Type'] = 'application/json';
     }
   }
@@ -78,7 +101,7 @@ const apiMethodMap: Record<ApiType, HttpMethod> = {
     })
     .catch(error => {
       console.error(`${apiType}错误:`, error);
-      throw error
+      throw error;
     })
 }
 

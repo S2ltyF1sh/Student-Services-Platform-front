@@ -19,15 +19,17 @@
         </div>
       </div>
       <div class="userStatus">
-        <button @click="turnLogin()">登录</button>
+        <button @click="turnLogin()" v-if="!loginStore.isLogin">登录</button>
+        <button v-if="loginStore.isLogin">欢迎{{ loginStore.userName }}</button>
+        <button @click="logout()" v-if="loginStore.isLogin">退出登录</button>
       </div>
     </div>
     <div class="content">
-      <div class="leftAside">
-        左侧边栏
-      </div>
       <div class="mainContainer">
-        主容器
+        <div class="mainHeader">{{ headerTitle }}</div>
+        <div class="mainBody">
+          <UserProfile />
+        </div>
       </div>
     </div>
   </div>
@@ -36,10 +38,27 @@
 <script setup lang="ts">
 import router from '@/router'
 import { useViewStore } from '../stores/mainStore'
+import { useLoginStore } from '@/stores/loginStore'
+import { apiCall } from '@/components/function/apiCall'
+import { ref } from 'vue'
+import UserProfile from '@/components/mainContainerViews/selfPage/UserProfile.vue'
 const viewStore = useViewStore()
+const loginStore = useLoginStore()
+const headerTitle = ref('欢迎使用学生服务系统！')
 
 const turnLogin = () =>{
   router.push('/login')
+}
+const logout = async () => {
+  try {
+    await apiCall('logout');
+    loginStore.changeIsLogin(false);
+    loginStore.currentHeader('');
+    loginStore.currentUser('');
+    loginStore.currentAccount('');
+  } catch (error) {
+    console.error('退出登录失败:', error);
+  }
 }
 </script>
 

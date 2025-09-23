@@ -1,12 +1,15 @@
 .container{
+  background-color: rgb(166, 202, 214);
   .header{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-width: 92vw;
+    width: 98vw;
     min-height : 10vh;
     height: 100px;
+    padding-right: 10px;
     background-color: rgb(98, 144, 230);
+    border-radius: 50px;
     .logo{
       width: 100px;
       height: 100px;
@@ -41,23 +44,49 @@
       a:hover {
         color: rgb(191, 196, 255);
         background-color: rgb(122, 158, 224);
+        font-size: 21px;
+      }
+    }
+    .userStatus{
+      button{
+        margin: 8px 6px;
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: none;
+        background-color: rgb(142, 166, 210);
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        transition: all .2s;
+      }
+      button:hover{
+        background-color: rgb(122, 158, 224);
+        transform: translateY(-1px);
+      }
+      button:active{
+        transform: translateY(0);
       }
     }
   }
   .content{
     display: flex;
-    .leftAside{
-      min-width: 100px;
-      min-height: 90vh;
-      width: 90vw;
-      background-color: aquamarine;
-    }
     .mainContainer{
-      min-width: 90vw;
-      min-height: 90vh;
+      min-width: 98vw;
+      min-height: 130vh;
       background-color: rgb(67, 121, 145);
+      border-radius: 50px;
+      .mainHeader {
+        width: 90vw;
+        height: 80px;
+        padding-left: 5vw;
+        font-size: 50px;
+        font-weight: 700;
+        background-color: rgb(67, 121, 145);
+        color: rgb(212, 219, 231);
+        border-radius: 50px;
+      }
     }
   }
-
 }
 
