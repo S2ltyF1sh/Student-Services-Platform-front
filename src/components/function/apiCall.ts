@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { computed } from 'vue'
-import { useLoginStore } from '../../stores/loginStore' // 根据实际路径调整
+import { useLoginStore } from '../../stores/loginStore'
 
-type ApiType = 'login' | 'regist' | 'logout' | 'post' | 'edit'
+type ApiType = 'login' | 'regist' | 'logout' | 'report' | 'edit' | 'studentGet' | 'normalAdminGet' | 'markPost' | 'acceptPost' | 'cancelAccept' | 'getAcceptPost' | 'replyPost' | 'superAdminGetAllUsers' | 'superAdminModify' | 'superAdminGetAllMark' | 'superAdminReviewPost'
 type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
 
 interface UserRequestBody {
@@ -12,6 +12,12 @@ interface UserRequestBody {
   type?: number;
   email?: string;
   image?: File | Blob | string;
+  operationType?: number;
+  username?: string;
+  userType?: number;
+  reportId?: number;
+  spam?: number;
+  [key: string]: unknown;
 }
 
 interface QueryParams {
@@ -38,8 +44,19 @@ export const apiCall = (
       case 'login': return '/api/user/login';
       case 'regist': return '/api/user/reg';
       case 'logout': return '/api/user/logout';
-      case 'post': return '/api/student/post';
+      case 'report': return '/api/student/report';
       case 'edit': return '/api/user/edit';
+      case 'studentGet': return '/api/student/get'
+      case 'normalAdminGet': return '/api/admin/getallpost'
+      case 'markPost': return '/api/admin/markpost'
+      case 'acceptPost': return '/api/admin/acceptpost'
+      case 'cancelAccept': return '/api/admin/cancel'
+      case 'getAcceptPost': return '/api/admin/getacceptpost'
+      case 'replyPost': return '/api/admin/reply'
+      case 'superAdminGetAllUsers': return '/api/superadmin/getalluser'
+      case 'superAdminModify': return '/api/superadmin/modify'
+      case 'superAdminGetAllMark': return '/api/superadmin/getallmark'
+      case 'superAdminReviewPost': return '/api/superadmin/reviewpost'
       default: return ''
     }
   });
@@ -48,8 +65,19 @@ export const apiCall = (
     login: 'post',
     regist: 'post',
     logout: 'post',
-    post: 'post',
-    edit: 'put'
+    report: 'post',
+    edit: 'put',
+    studentGet: 'get',
+    normalAdminGet: 'get',
+    markPost: 'post',
+    acceptPost: 'put',
+    cancelAccept: 'put',
+    getAcceptPost: 'get',
+    replyPost: 'post',
+    superAdminGetAllUsers: 'get',
+    superAdminModify: 'post',
+    superAdminGetAllMark: 'get',
+    superAdminReviewPost: 'post'
   }
 
   const loginStore = useLoginStore();
@@ -63,7 +91,7 @@ export const apiCall = (
     headers: Record<string, string>;
   } = {
     method: apiMethodMap[apiType] || 'post',
-    url: 'http://abd77f82.natappfree.cc' + target.value,
+    url: 'http://101.42.221.150:8080' + target.value,
     headers: {
       ...options?.headers,
     }
