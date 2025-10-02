@@ -10,21 +10,21 @@
         </div>
       </div>
       <div class="infoBlock">
-        <div class="row">
+        <div class="info">
           <label>用户名：</label>
           <span v-if="!editMode">{{ form.userName || '未设置' }}</span>
           <input v-else v-model="form.userName" placeholder="请输入用户名" />
         </div>
-        <div class="row">
+        <div class="info">
           <label>账号：</label>
           <span>{{ accountName || '未设置' }}</span>
         </div>
-        <div class="row">
+        <div class="info">
           <label>邮箱：</label>
-          <span v-if="!editMode">{{ form.email || '未设置' }}</span>
+          <span v-if="!editMode">{{ form.email || '未更改' }}</span>
           <input v-else v-model="form.email" placeholder="请输入邮箱" />
         </div>
-        <div class="row" v-if="editMode">
+        <div class="info" v-if="editMode">
           <label>密码：</label>
           <input v-model="form.password" type="password" placeholder="请输入密码" />
         </div>
@@ -58,8 +58,7 @@ const avatarUrl = ref<string>(new URL('@/components/img/b_194d524861bc60ea62da29
 const form = reactive({
   userName: loginStore.userName,
   email: '',
-  password: '',
-  role: '学生'
+  password: ''
 })
 
 const startEdit = () => {
@@ -70,11 +69,10 @@ const save = async () => {
   try {
     await apiCall('edit', {
       accountName: accountName.value,
-      userName: form.userName,
       password: form.password,
       email: form.email
     })
-    loginStore.currentUser(form.userName)
+    loginStore.userName = form.userName
     editMode.value = false
     form.password = ''
   } catch (error) {
@@ -101,7 +99,7 @@ const onSelectAvatar = (e: Event) => {
 </script>
 
 <style scoped>
-@import url('../../../viewsStyle/userProfile.css');
+@import url('@/viewsStyle/userProfile.css');
 </style>
 
 
