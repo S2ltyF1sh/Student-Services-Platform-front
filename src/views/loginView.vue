@@ -118,11 +118,13 @@ const login = async () => {
     if (response.data) {
       const header = response.data.token;
       const username = response.data.username
+      const userType = Number(response.data.userType ?? response.data.type ?? 0)
 
-      loginStore.currentUser(username)
-      loginStore.currentHeader(header)
-      loginStore.changeIsLogin(true)
-      loginStore.currentAccount(UserInfo.value.accountName)
+      loginStore.userName = username
+      loginStore.header = header
+      loginStore.isLogin = true
+      loginStore.accountName = UserInfo.value.accountName
+      loginStore.userType = userType
       setTimeout(() => {
         router.push('/')
       }, 1500)
