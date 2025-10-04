@@ -494,8 +494,7 @@ const fetchAllUsers = async () => {
   try {
     const response = await apiCall('superAdminGetAllUsers')
     users.value = response.data || []
-  } catch (error) {
-    console.error('获取用户列表失败:', error)
+  } catch  {
     users.value = []
   }
 }
@@ -504,13 +503,11 @@ const fetchAllMarks = async () => {
   try {
     const response = await apiCall('superAdminGetAllMark')
     marks.value = response.data || []
-  } catch (error) {
-    console.error('获取标记列表失败:', error)
+  } catch  {
     marks.value = []
   }
 }
 
-// 修改 fetchFeedbacks 函数来统计紧急程度和类型
 const fetchFeedbacks = async () => {
   try {
     const response = await apiCall('normalAdminGet')
@@ -579,8 +576,7 @@ const fetchFeedbacks = async () => {
       type: getTypeText(item.reportType || 5),
       area: '教学楼A'
     }))
-  } catch (error) {
-    console.error('获取反馈列表失败:', error)
+  } catch  {
     feedbacks.value = []
     urgentStats.value = { urgent: 0, normal: 0 }
     typeStats.value = { dormitory: 0, teaching: 0, public: 0, network: 0, other: 0 }
@@ -604,9 +600,7 @@ const addUser = async () => {
     resetNewUser()
     await fetchAllUsers()
     alert('用户添加成功')
-  } catch (error) {
-    console.error('添加用户失败:', error)
-    alert('添加用户失败')
+  } catch  {
   }
 }
 
@@ -631,9 +625,7 @@ const updateUser = async () => {
     showEditUserModal.value = false
     await fetchAllUsers()
     alert('用户更新成功')
-  } catch (error) {
-    console.error('更新用户失败:', error)
-    alert('更新用户失败')
+  } catch  {
   }
 }
 
@@ -653,9 +645,8 @@ const deleteUser = async (user: User) => {
       await apiCall('superAdminModify', deleteData)
       await fetchAllUsers()
       alert('用户删除成功')
-    } catch (error) {
-      console.error('删除用户失败:', error)
-      alert('删除用户失败')
+    } catch  {
+
     }
   }
 }
@@ -669,10 +660,8 @@ const searchUser = async () => {
 
     const response = await apiCall('superAdminModify', queryData)
     searchResult.value = response.data
-  } catch (error) {
-    console.error('查询用户失败:', error)
+  } catch  {
     searchResult.value = null
-    alert('查询用户失败')
   }
 }
 
@@ -686,9 +675,7 @@ const reviewMark = async (mark: Mark, action: 'approve' | 'reject') => {
     await apiCall('superAdminReviewPost', body)
     await fetchAllMarks()
     alert(`标记${action === 'approve' ? '取消标记' : '设为垃圾信息'}成功`)
-  } catch (error) {
-    console.error('审核标记失败:', error)
-    alert('审核标记失败')
+  } catch  {
   }
 }
 

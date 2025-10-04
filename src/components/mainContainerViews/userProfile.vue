@@ -75,8 +75,8 @@ const save = async () => {
     loginStore.userName = form.userName
     editMode.value = false
     form.password = ''
-  } catch (error) {
-    console.error('编辑个人信息失败:', error)
+  } catch {
+    console.log('Edit profile failed')
   }
 }
 

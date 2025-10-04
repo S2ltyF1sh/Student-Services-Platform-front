@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { computed } from 'vue'
 import { useLoginStore } from '../../stores/loginStore'
+import { useErrorStore } from './errorHint'
 
 type ApiType = 'login' | 'regist' | 'logout' | 'report' | 'edit' | 'studentGet' | 'normalAdminGet' | 'markPost' | 'acceptPost' | 'cancelAccept' | 'getAcceptPost' | 'replyPost' | 'superAdminGetAllUsers' | 'superAdminModify' | 'superAdminGetAllMark' | 'superAdminReviewPost'
 type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
@@ -81,6 +82,7 @@ export const apiCall = (
   }
 
   const loginStore = useLoginStore();
+  const errorStore = useErrorStore();
 
   // 构建配置对象
   const config: {
@@ -121,14 +123,47 @@ export const apiCall = (
   return axios(config)
     .then(response => {
       console.log(`${apiType}响应:`, response);
-      if (response.data.code === 200 || response.data.code === 0) {
+      const code = response.data.code;
+      const msg = response.data.msg || '未知错误';
+      console.log(`${apiType}响应:`, code, msg);
+
+      if (code === 200 || code === 0) {
+        errorStore.clearError();
         return response.data;
       } else {
-        throw new Error(response.data.msg || `${apiType}请求失败`);
+        errorStore.showError(msg);
+        throw {
+          code: code,
+          msg: msg,
+          data: response.data,
+          isServerError: true
+        };
       }
     })
     .catch(error => {
       console.error(`${apiType}错误:`, error);
+
+      // 如果是主动抛出的服务器错误，不再重复处理
+      if (error.isServerError) {
+        throw error;
+      }
+
+      // 如果是 axios 错误且包含服务端响应
+      if (error?.response?.data) {
+        const code = error.response.data.code;
+        const msg = error.response.data.msg || '请求失败';
+        console.log(`${apiType}错误:`, code, msg);
+
+        if (code === 200 || code === 0) {
+          errorStore.clearError();
+        } else {
+          errorStore.showError(msg);
+        }
+      } else {
+        // 网络错误或其他错误
+        errorStore.showError('网络连接失败');
+      }
+
       throw error;
     })
 }

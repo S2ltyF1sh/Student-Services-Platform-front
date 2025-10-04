@@ -64,8 +64,7 @@ const fetchReports = async () => {
   loading.value = true
   try {
     reports.value = await fetchReportsApi('student')
-  } catch (e) {
-    console.error('获取报修列表失败:', e)
+  } catch {
     reports.value = []
   } finally {
     loading.value = false

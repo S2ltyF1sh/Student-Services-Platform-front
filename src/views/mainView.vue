@@ -117,8 +117,8 @@ const logout = async () => {
     loginStore.header = '';
     loginStore.userName = '';
     loginStore.accountName = '';
-  } catch (error) {
-    console.error('退出登录失败:', error);
+  } catch {
+    console.log('Logout failed')
   }
 }
 </script>

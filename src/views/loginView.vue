@@ -17,6 +17,7 @@
                 <div class="inputInfo">
                   <span class="lableInput"><p>账户名：</p><input type="text" v-model="UserInfo.accountName"></span>
                   <span class="lableInput"><p>密码：</p><input type="password" v-model="UserInfo.password"></span>
+
                 </div>
               </div>
             </div>
@@ -89,21 +90,21 @@ const functionButtonContext = computed(() => {
 const toggleState = () => {loginState.value = loginState.value === 'login' ? 'regist' : 'login'}
 
 const regist = async () => {
-
-  const body ={
-      username: UserInfo.value.username,
-      accountName: UserInfo.value.accountName,
-      password: UserInfo.value.password,
-      userType: Number(UserInfo.value.type),
-      email: UserInfo.value.email
+  const body = {
+    username: UserInfo.value.username,
+    accountName: UserInfo.value.accountName,
+    password: UserInfo.value.password,
+    userType: Number(UserInfo.value.type),
+    email: UserInfo.value.email
   }
 
   try {
     const response = await apiCall('regist', body);
-    if (response.data) {loginState.value = 'login'
+    if (response.data) {
+      loginState.value = 'login'
     }
-  } catch (error) {
-    console.error('注册失败:', error);
+  } catch {
+    console.log('Registration failed')
   }
 };
 
@@ -127,10 +128,10 @@ const login = async () => {
       loginStore.userType = userType
       setTimeout(() => {
         router.push('/')
-      }, 1500)
+      }, 700)
     }
-  } catch (error) {
-    console.error('登录失败:', error);
+  } catch {
+    console.log('Login failed')
   }
 };
 </script>

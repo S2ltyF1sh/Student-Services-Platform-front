@@ -122,9 +122,8 @@ const onSubmit = async () => {
     await apiCall('report', data)
     onReset()
     alert('提交成功')
-  } catch (error) {
-    console.error('提交报修失败:', error)
-    alert('提交失败，请稍后重试')
+  } catch {
+    console.log('Report submission failed')
   } finally {
     submitting.value = false
   }

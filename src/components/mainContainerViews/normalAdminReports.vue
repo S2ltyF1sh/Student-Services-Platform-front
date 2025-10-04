@@ -87,8 +87,8 @@ const fetchAllReports = async () => {
   loading.value = true
   try {
     reports.value = await fetchReportsApi('all')
-  } catch (e) {
-    console.error('获取所有报修失败:', e)
+  } catch {
+
     reports.value = []
   } finally {
     loading.value = false
@@ -99,8 +99,7 @@ const fetchAcceptedReports = async () => {
   loading.value = true
   try {
     acceptedReports.value = await fetchReportsApi('accepted')
-  } catch (e) {
-    console.error('获取已接单报修失败:', e)
+  } catch {
     acceptedReports.value = []
   } finally {
     loading.value = false
@@ -122,8 +121,7 @@ const markSpam = async (item: ReportItem, level: 1 | 2) => {
     if (!reportId) return
     await apiCall('markPost', { reportId, spam: level } as Record<string, unknown>)
     refresh()
-  } catch (e) {
-    console.error('标记垃圾失败:', e)
+  } catch {
   }
 }
 
@@ -133,8 +131,7 @@ const accept = async (item: ReportItem) => {
     if (!reportId) return
     await apiCall('acceptPost', { reportId } as Record<string, unknown>)
     refresh()
-  } catch (e) {
-    console.error('接单失败:', e)
+  } catch {
   }
 }
 
@@ -144,8 +141,7 @@ const cancel = async (item: ReportItem) => {
     if (!reportId) return
     await apiCall('cancelAccept', { reportId } as Record<string, unknown>)
     refresh()
-  } catch (e) {
-    console.error('撤销接单失败:', e)
+  } catch {
   }
 }
 
@@ -164,8 +160,7 @@ const reply = async (item: ReportItem) => {
   try {
     await apiCall('replyPost', { reportId, reply: content } as Record<string, unknown>)
     refresh()
-  } catch (e) {
-    console.error('回复失败:', e)
+  } catch {
   }
 }
 
