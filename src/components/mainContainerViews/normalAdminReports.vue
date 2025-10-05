@@ -5,6 +5,44 @@
         <button @click="refresh" :disabled="loading">刷新</button>
       </div>
     </div>
+    <div class="categoryFilter">
+      <button
+        :class="{ active: activeCategory === 'all' }"
+        @click="switchCategory('all')"
+      >
+        全部类型
+      </button>
+      <button
+        :class="{ active: activeCategory === '1' }"
+        @click="switchCategory('1')"
+      >
+        宿舍设施
+      </button>
+      <button
+        :class="{ active: activeCategory === '2' }"
+        @click="switchCategory('2')"
+      >
+        教学设备
+      </button>
+      <button
+        :class="{ active: activeCategory === '3' }"
+        @click="switchCategory('3')"
+      >
+        公共区域
+      </button>
+      <button
+        :class="{ active: activeCategory === '4' }"
+        @click="switchCategory('4')"
+      >
+        网络与软件
+      </button>
+      <button
+        :class="{ active: activeCategory === '5' }"
+        @click="switchCategory('5')"
+      >
+        其他
+      </button>
+    </div>
     <div class="bodyContainer">
       <aside class="sideBar">
         <button :class="{ active: activeTab === 'all' }" @click="switchTab('all')">全部报修</button>
@@ -51,6 +89,37 @@
       </ul>
       </div>
     </div>
+      <div v-if="showReplyDialog" class="reply-dialog-overlay" @click="handleOverlayClick">
+      <div class="reply-dialog">
+        <h3 class="dialog-title">选择回复内容</h3>
+        <div class="preset-replies">
+          <button
+            v-for="(reply, index) in presetReplies"
+            :key="index"
+            type="button"
+            class="preset-reply-btn"
+            @click="handlePresetSelect(reply)"
+          >
+            {{ reply }}
+          </button>
+        </div>
+
+        <textarea
+          v-model="customContent"
+          class="custom-reply-input"
+          placeholder="或输入自定义回复..."
+          @keydown.ctrl.enter="handleConfirm"
+          @keydown.meta.enter="handleConfirm"
+        ></textarea>
+
+        <div class="dialog-actions">
+          <button type="button" class="cancel-btn" @click="handleCancel">取消</button>
+          <button type="button" class="confirm-btn" @click="handleConfirm" :disabled="!hasContent">
+            发送
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -72,16 +141,37 @@ interface ReportItem extends SharedReportItem {
 
 type ReportIdLike = number | string | undefined
 
-const getId = (item: ReportItem): ReportIdLike => {
-  return item.reportId as ReportIdLike
-}
-
 const reports = ref<ReportItem[]>([])
 const acceptedReports = ref<ReportItem[]>([])
 const loading = ref(false)
 const defaultImageUrl = new URL('@/components/img/illust_115746356_20250921_142946.png', import.meta.url).href
 const activeTab = ref<'all' | 'accepted'>('all')
-const currentList = computed(() => activeTab.value === 'all' ? reports.value : acceptedReports.value)
+const activeCategory = ref<'all' | '1' | '2' | '3' | '4' | '5'>('all')
+
+const currentList = computed(() => {
+  const baseList = activeTab.value === 'all' ? reports.value : acceptedReports.value
+
+  if (activeCategory.value === 'all') {
+    return baseList
+  }
+
+  return baseList.filter(item => String(item.reportType) === activeCategory.value)
+})
+const showReplyDialog = ref(false)
+const hasContent = computed(() => customContent.value.trim().length > 0)
+const customContent = ref('')
+const currentReportId = ref<number|string>('')
+const presetReplies = ref([
+  "收到，我们会尽快处理",
+  "感谢您的反馈",
+  "问题已记录，正在排查中",
+  "请提供更多详细信息",
+  "这个问题已经修复"
+])
+
+const getId = (item: ReportItem): ReportIdLike => {
+  return item.reportId as ReportIdLike
+}
 
 const fetchAllReports = async () => {
   loading.value = true
@@ -113,6 +203,10 @@ const refresh = () => {
 const switchTab = (tab: 'all' | 'accepted') => {
   activeTab.value = tab
   refresh()
+}
+
+const switchCategory = (category: 'all' | '1' | '2' | '3' | '4' | '5') => {
+  activeCategory.value = category
 }
 
 const markSpam = async (item: ReportItem, level: 1 | 2) => {
@@ -153,13 +247,46 @@ const isAccepted = (item: ReportItem) => {
 const reply = async (item: ReportItem) => {
   const reportId = getId(item)
   if (!reportId) return
-  const text = window.prompt('请输入回复内容：', '')
-  if (text === null) return
-  const content = String(text).trim()
-  if (!content) return
+
+  currentReportId.value = reportId
+  showReplyDialog.value = true
+  customContent.value = ''
+
+}
+
+const handlePresetSelect = (content: string) => {
+  sendReply(content)
+}
+
+const handleConfirm = async () => {
+  const content = customContent.value.trim()
+  if (content) {
+    await sendReply(content)
+  }
+}
+
+const handleCancel = () => {
+  showReplyDialog.value = false
+  customContent.value = ''
+}
+
+const handleOverlayClick = (event: MouseEvent) => {
+  if (event.target === event.currentTarget) {
+    handleCancel()
+  }
+}
+
+const sendReply = async (content: string) => {
+  if (!currentReportId.value) return
+
   try {
-    await apiCall('replyPost', { reportId, reply: content } as Record<string, unknown>)
+    await apiCall('replyPost', {
+      reportId: currentReportId.value,
+      reply: content
+    } as Record<string, unknown>)
     refresh()
+    showReplyDialog.value = false
+    customContent.value = ''
   } catch {
   }
 }
