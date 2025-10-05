@@ -3,6 +3,11 @@
     <div class="listHeader">
       <div class="actions">
         <button @click="refresh" :disabled="loading">刷新</button>
+        <span class="pager">
+          <button @click="prevPage" :disabled="loading || pageNum <= 1">上一页</button>
+          <span class="pageNo">第 {{ pageNum }} 页</span>
+          <button @click="nextPage" :disabled="loading">下一页</button>
+        </span>
       </div>
     </div>
     <div class="categoryFilter">
@@ -157,6 +162,7 @@ const currentList = computed(() => {
 
   return baseList.filter(item => String(item.reportType) === activeCategory.value)
 })
+const pageNum = ref(1)
 const showReplyDialog = ref(false)
 const hasContent = computed(() => customContent.value.trim().length > 0)
 const customContent = ref('')
@@ -176,7 +182,7 @@ const getId = (item: ReportItem): ReportIdLike => {
 const fetchAllReports = async () => {
   loading.value = true
   try {
-    reports.value = await fetchReportsApi('all')
+    reports.value = await fetchReportsApi('all', pageNum.value)
   } catch {
 
     reports.value = []
@@ -188,7 +194,7 @@ const fetchAllReports = async () => {
 const fetchAcceptedReports = async () => {
   loading.value = true
   try {
-    acceptedReports.value = await fetchReportsApi('accepted')
+    acceptedReports.value = await fetchReportsApi('accepted', pageNum.value)
   } catch {
     acceptedReports.value = []
   } finally {
@@ -202,11 +208,24 @@ const refresh = () => {
 
 const switchTab = (tab: 'all' | 'accepted') => {
   activeTab.value = tab
+  pageNum.value = 1
   refresh()
 }
 
 const switchCategory = (category: 'all' | '1' | '2' | '3' | '4' | '5') => {
   activeCategory.value = category
+}
+
+const prevPage = () => {
+  if (pageNum.value > 1) {
+    pageNum.value -= 1
+    refresh()
+  }
+}
+
+const nextPage = () => {
+  pageNum.value += 1
+  refresh()
 }
 
 const markSpam = async (item: ReportItem, level: 1 | 2) => {

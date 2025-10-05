@@ -49,7 +49,10 @@ export const formatTime = (v: unknown): string => {
 
 export type ReportScope = 'student' | 'all' | 'accepted'
 
-export const fetchReports = async (scope: ReportScope): Promise<ReportItem[]> => {
+export const fetchReports = async (
+  scope: ReportScope,
+  pageNum?: number
+): Promise<ReportItem[]> => {
   let api: 'studentGet' | 'normalAdminGet' | 'getAcceptPost'
   switch (scope) {
     case 'student':
@@ -61,8 +64,29 @@ export const fetchReports = async (scope: ReportScope): Promise<ReportItem[]> =>
     default:
       api = 'normalAdminGet'
   }
-  const res = await apiCall(api)
-  const list = Array.isArray(res?.data) ? (res.data as ReportItem[]) : []
+
+  const query: Record<string, unknown> | undefined = pageNum && pageNum > 0 ? { pageNum } : undefined
+
+  interface PagedResponse {
+    records: ReportItem[]
+    total: number
+    size: number
+    current: number
+    pages: number
+  }
+
+  const res = await apiCall(api, undefined, query)
+  const raw = res?.data as unknown
+
+  const isPagedResponse = (v: unknown): v is PagedResponse => {
+    if (typeof v !== 'object' || v === null) return false
+    const maybe = v as PagedResponse
+    return Array.isArray(maybe.records)
+  }
+
+  const list: ReportItem[] = Array.isArray(raw)
+    ? (raw as ReportItem[])
+    : (isPagedResponse(raw) ? raw.records : [])
   return list
 }
 

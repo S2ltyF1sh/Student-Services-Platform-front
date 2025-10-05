@@ -28,6 +28,10 @@
       font-weight: 600;
       cursor: pointer;
     }
+
+    .pager {
+      margin-left: 3vw;
+    }
   }
 
   .categoryFilter{

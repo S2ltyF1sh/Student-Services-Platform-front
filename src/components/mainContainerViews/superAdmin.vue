@@ -510,7 +510,7 @@ const fetchAllMarks = async () => {
 
 const fetchFeedbacks = async () => {
   try {
-    const response = await apiCall('normalAdminGet')
+    const response = await apiCall('superAdminGetAllPost')
     const feedbacksData = response.data || []
 
     // 重置统计

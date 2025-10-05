@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useLoginStore } from '../../stores/loginStore'
 import { useErrorStore } from './errorHint'
 
-type ApiType = 'login' | 'regist' | 'logout' | 'report' | 'edit' | 'studentGet' | 'normalAdminGet' | 'markPost' | 'acceptPost' | 'cancelAccept' | 'getAcceptPost' | 'replyPost' | 'superAdminGetAllUsers' | 'superAdminModify' | 'superAdminGetAllMark' | 'superAdminReviewPost'
+type ApiType = 'login' | 'regist' | 'logout' | 'report' | 'edit' | 'studentGet' | 'normalAdminGet' | 'markPost' | 'acceptPost' | 'cancelAccept' | 'getAcceptPost' | 'replyPost' | 'superAdminGetAllUsers' | 'superAdminModify' | 'superAdminGetAllMark' | 'superAdminReviewPost' | 'superAdminGetAllPost'
 type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
 
 interface UserRequestBody {
@@ -23,6 +23,8 @@ interface UserRequestBody {
 
 interface QueryParams {
   user_id?: number | string;
+  pageNum?: number;
+  [key: string]: unknown;
 }
 
 interface ApiCallOptions {
@@ -37,7 +39,7 @@ const isFormData = (data: unknown): data is FormData => {
 export const apiCall = (
   apiType: ApiType,
   body?: UserRequestBody | FormData,
-  query?: QueryParams,
+  query?: Record<string, unknown>,
   options?: ApiCallOptions
 ) => {
   const target = computed(() => {
@@ -49,6 +51,7 @@ export const apiCall = (
       case 'edit': return '/api/user/edit';
       case 'studentGet': return '/api/student/get'
       case 'normalAdminGet': return '/api/admin/getallpost'
+      case 'superAdminGetAllPost': return '/api/superadmin/supergetallpost'
       case 'markPost': return '/api/admin/markpost'
       case 'acceptPost': return '/api/admin/acceptpost'
       case 'cancelAccept': return '/api/admin/cancel'
@@ -70,6 +73,7 @@ export const apiCall = (
     edit: 'put',
     studentGet: 'get',
     normalAdminGet: 'get',
+    superAdminGetAllPost: 'get',
     markPost: 'post',
     acceptPost: 'put',
     cancelAccept: 'put',
