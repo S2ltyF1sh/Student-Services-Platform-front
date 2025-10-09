@@ -9,6 +9,7 @@ export interface ReportItem {
   reportType?: number | string;
   reply?: string | null;
   postTime?: string | number | Date;
+  comment?: string;
 }
 
 export const typeText = (v: unknown): string => {

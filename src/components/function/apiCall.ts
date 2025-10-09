@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useLoginStore } from '../../stores/loginStore'
 import { useErrorStore } from './errorHint'
 
-type ApiType = 'login' | 'regist' | 'logout' | 'report' | 'edit' | 'studentGet' | 'normalAdminGet' | 'markPost' | 'acceptPost' | 'cancelAccept' | 'getAcceptPost' | 'replyPost' | 'superAdminGetAllUsers' | 'superAdminModify' | 'superAdminGetAllMark' | 'superAdminReviewPost' | 'superAdminGetAllPost'
+type ApiType = 'login' | 'regist' | 'logout' | 'report' | 'edit' | 'studentGet' | 'studentComment' | 'normalAdminGet' | 'markPost' | 'acceptPost' | 'cancelAccept' | 'getAcceptPost' | 'replyPost' | 'superAdminGetAllUsers' | 'superAdminModify' | 'superAdminGetAllMark' | 'superAdminReviewPost' | 'superAdminGetAllPost'
 type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
 
 interface UserRequestBody {
@@ -18,6 +18,7 @@ interface UserRequestBody {
   userType?: number;
   reportId?: number;
   spam?: number;
+  comment?: string;
   [key: string]: unknown;
 }
 
@@ -50,6 +51,7 @@ export const apiCall = (
       case 'report': return '/api/student/report';
       case 'edit': return '/api/user/edit';
       case 'studentGet': return '/api/student/get'
+      case 'studentComment': return '/api/student/comment'
       case 'normalAdminGet': return '/api/admin/getallpost'
       case 'superAdminGetAllPost': return '/api/superadmin/supergetallpost'
       case 'markPost': return '/api/admin/markpost'
@@ -72,6 +74,7 @@ export const apiCall = (
     report: 'post',
     edit: 'put',
     studentGet: 'get',
+    studentComment: 'put',
     normalAdminGet: 'get',
     superAdminGetAllPost: 'get',
     markPost: 'post',
